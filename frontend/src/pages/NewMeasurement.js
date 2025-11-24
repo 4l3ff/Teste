@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
-import { ArrowLeft, Calendar as CalendarIcon, Camera } from 'lucide-react';
+import { ArrowLeft, Camera } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Calendar } from '../components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import DateScrollPicker from '../components/DateScrollPicker';
 import { addItem } from '../utils/db';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 const NewMeasurement = () => {
   const navigate = useNavigate();
@@ -50,7 +47,6 @@ const NewMeasurement = () => {
   };
 
   const saveMeasurement = async () => {
-    // Check if at least one measurement is filled
     const hasData = Object.values(measurements).some(val => val !== '');
     if (!hasData) {
       toast.error('Preencha pelo menos uma medição');
@@ -121,27 +117,11 @@ const NewMeasurement = () => {
       <div className="max-w-md mx-auto px-4 pt-6">
         {/* Date Picker */}
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Data</label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-left font-normal bg-[#1a1a1b] border-gray-800"
-                data-testid="date-picker-button"
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#1a1a1b] border-gray-800">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={(newDate) => newDate && setDate(newDate)}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <DateScrollPicker
+            value={date}
+            onChange={setDate}
+            label="Data"
+          />
         </div>
 
         {/* Progress Image */}

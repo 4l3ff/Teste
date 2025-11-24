@@ -4,12 +4,9 @@ import { useApp } from '../contexts/AppContext';
 import { ArrowLeft, Camera } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Calendar } from '../components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import DateScrollPicker from '../components/DateScrollPicker';
 import { updateItem } from '../utils/db';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -127,7 +124,7 @@ const EditProfile = () => {
         </div>
 
         {/* Form Fields */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">Nome</label>
             <Input
@@ -165,28 +162,11 @@ const EditProfile = () => {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Data de Nascimento</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal bg-[#1a1a1b] border-gray-800"
-                  data-testid="birthdate-picker-button"
-                >
-                  {birthDate ? format(birthDate, "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : 'Selecione a data'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-[#1a1a1b] border-gray-800">
-                <Calendar
-                  mode="single"
-                  selected={birthDate}
-                  onSelect={setBirthDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <DateScrollPicker
+            value={birthDate}
+            onChange={setBirthDate}
+            label="Data de Nascimento"
+          />
         </div>
       </div>
     </div>
