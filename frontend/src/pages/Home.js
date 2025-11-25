@@ -1,19 +1,31 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { calculateCalories, formatDuration, formatDate } from '../utils/calculations';
 import { Flame, Clock, Dumbbell, TrendingUp } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
+import { Button } from '../components/ui/button';
 
 const Home = () => {
   const { workouts, userProfile } = useApp();
   const navigate = useNavigate();
+  const [selectedPeriod, setSelectedPeriod] = useState('7dias');
+
+  const periods = [
+    { id: '7dias', label: '7 dias', days: 7 },
+    { id: '30dias', label: '30 dias', days: 30 },
+    { id: '3meses', label: '3 meses', days: 90 },
+    { id: '6meses', label: '6 meses', days: 180 },
+    { id: '12meses', label: '12 meses', days: 365 },
+  ];
+
+  const currentPeriod = periods.find(p => p.id === selectedPeriod) || periods[0];
 
   const periodStats = useMemo(() => {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const daysAgo = new Date();
+    daysAgo.setDate(daysAgo.getDate() - currentPeriod.days);
     
-    const recentWorkouts = workouts.filter(w => new Date(w.date) >= sevenDaysAgo);
+    const recentWorkouts = workouts.filter(w => new Date(w.date) >= daysAgo);
     
     let totalMinutes = 0;
     let totalCalories = 0;
@@ -31,7 +43,7 @@ const Home = () => {
       totalCalories,
       totalVolume,
     };
-  }, [workouts]);
+  }, [workouts, currentPeriod]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
@@ -48,8 +60,24 @@ const Home = () => {
         <div className="bg-[#1a1a1b] rounded-2xl p-6 mb-6 border border-gray-800">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Período</h2>
-            <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
-              7 dias
+            <div className="relative">
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="bg-blue-500/20 text-blue-400 px-4 py-1 rounded-full text-sm appearance-none cursor-pointer border border-blue-500/30 pr-8"
+                style={{ minWidth: '120px' }}
+              >
+                {periods.map(period => (
+                  <option key={period.id} value={period.id} className="bg-[#1a1a1b] text-white">
+                    {period.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-blue-400">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
           </div>
 
