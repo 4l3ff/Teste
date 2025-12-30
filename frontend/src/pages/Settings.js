@@ -6,7 +6,12 @@ import { exportAllData, importAllData, clearAllData } from '../utils/db';
 import { useApp } from '../contexts/AppContext';
 import { toast } from 'sonner';
 
+import { useState } from 'react';
+import { Info } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+
 const Settings = () => {
+  const [showAbout, setShowAbout] = useState(false);
   const navigate = useNavigate();
   const { refreshData } = useApp();
 
@@ -151,7 +156,7 @@ const Settings = () => {
             <Button
               onClick={handleClearData}
               variant="destructive"
-              className="w-full"
+              className="w-full bg-red-500 hover:bg-red-600"
               data-testid="clear-data-button"
             >
               <Trash2 size={16} className="mr-2" />
@@ -163,30 +168,79 @@ const Settings = () => {
         {/* About */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Sobre</h2>
-          <div className="bg-[#1a1a1b] rounded-2xl p-5 border border-gray-800">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <span className="text-2xl font-bold">D</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                Dreamer
-              </h3>
-              <p className="text-sm text-gray-400 mb-4">Seu companheiro de treinos offline</p>
-              <div className="border-t border-gray-800 pt-4">
-                <p className="text-sm text-gray-400 mb-2">By TechnoSerp</p>
-                <a
-                  href="https://linktr.ee/technoserp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 text-sm"
-                >
-                  linktr.ee/technoserp
-                  <ExternalLink size={14} />
-                </a>
+
+          <div
+            onClick={() => setShowAbout(true)}
+            className="bg-[#1a1a1b] rounded-2xl p-5 border border-gray-800 cursor-pointer hover:border-blue-500/40 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Info size={22} className="text-blue-500" />
+              <div className="flex-1">
+                <h3 className="font-semibold">Sobre o App</h3>
+                <p className="text-sm text-gray-400">Versão e informações</p>
               </div>
             </div>
           </div>
         </div>
+
+        {/* About Dialog */}
+        <Dialog open={showAbout} onOpenChange={setShowAbout}>
+          <DialogContent className="bg-[#1a1a1b] border-gray-800 text-white">
+            <DialogHeader>
+              <DialogTitle>Sobre o App</DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-4">
+              <div className="text-center py-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
+                  <span className="text-3xl font-bold">D</span>
+                </div>
+
+                <h2 className="text-2xl font-bold mb-2">Dreamer</h2>
+                <p className="text-gray-400">Versão 1.0.0</p>
+              </div>
+
+              <div className="bg-[#0a0a0b] rounded-xl p-4 space-y-2 text-sm">
+                <p className="text-gray-300">
+                  Dreamer - App de controle de treinos de academia com design inspirado no Hevy.
+                </p>
+
+                <p className="text-gray-400">Recursos:</p>
+
+                <ul className="text-gray-400 space-y-1 ml-4 list-disc">
+                  <li>Criação de rotinas personalizadas</li>
+                  <li>Registro de treinos e séries</li>
+                  <li>Histórico e estatísticas</li>
+                  <li>Medições corporais completas</li>
+                  <li>Backup e restauração</li>
+                  <li>Funcionamento offline</li>
+                </ul>
+              </div>
+
+              <div className="bg-[#0a0a0b] rounded-xl p-4 text-center">
+                <p className="text-gray-400 text-sm mb-2">Desenvolvido por</p>
+
+                <a
+                  href="https://linktr.ee/technoserp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 text-blue-500 font-semibold text-lg hover:text-blue-400 transition-colors"
+                >
+                  TechnoSerp <ExternalLink size={16} className="opacity-80" />
+                </a>
+
+              </div>
+
+              <Button
+                onClick={() => setShowAbout(false)}
+                className="w-full bg-blue-500 hover:bg-blue-600"
+              >
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
